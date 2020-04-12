@@ -39,7 +39,7 @@ def eval_model(il_activation, hl_activation, ol_activation, nb_epochs, batch_siz
     # evaluate the model
     eval_model=model.evaluate(X_train, Y_train)
     print("Accuracy eval: %.2f%%" %(eval_model[1]*100))
-
+    del model
     return [datetime.now().strftime("%m/%d/%Y, %H:%M:%S"), il_activation, hl_activation, ol_activation, nb_epochs, batch_size, hidden_layer_neurons, eval_model[1]]
 
 def append_row_to_file(list_of_elem):
