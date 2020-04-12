@@ -26,14 +26,17 @@ X = dataset.drop("rev_cat", 1)
 # Using Pearson Correlation
 plt.figure(figsize=(12,10))
 cor = dataset.corr()
-sns.heatmap(cor, annot=True, cmap=plt.cm.Reds)
-print("showing results")
-plt.savefig('./stats/correlation.png')
+# sns.heatmap(cor, annot=True, cmap=plt.cm.Reds)
+print(cor)
 
-plt.show()
+# plt.show()
 
 # # Correlation with output variable
-# cor_target = abs(cor["rev_cat"])
+cor_target = abs(cor["rev_cat"])
 # # Selecting highly correlated features
-# relevant_features = cor_target[cor_target>0.5]
-# relevant_features
+relevant_features = cor_target[cor_target>0]
+
+relevant_features.to_csv('./stats/corr.csv')
+
+
+print(relevant_features)

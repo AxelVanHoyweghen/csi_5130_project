@@ -125,12 +125,12 @@ movies = movies.loc[movies['revenue'] > 500000]
 # modify data objects
 
 # genres
-movies[['genres']] = movies[['genres']].applymap(json_to_arr)
-genres = list_counter(movies["genres"].values, log=False)
-# initialize all at 0
-for g in genres:
-    cat_name = 'genre_' + g[0].lower().replace(" ", "")
-    movies[cat_name] = 0
+# movies[['genres']] = movies[['genres']].applymap(json_to_arr)
+# genres = list_counter(movies["genres"].values, log=False)
+# # initialize all at 0
+# for g in genres:
+#     cat_name = 'genre_' + g[0].lower().replace(" ", "")
+#     movies[cat_name] = 0
 
 # production countries
 # movies[['production_countries']] = movies[['production_countries']].applymap(lambda row: json_to_arr(row, "iso_3166_1"))
@@ -141,12 +141,12 @@ for g in genres:
 #     movies[cat_name] = 0
 
 # production comapnies
-movies[['production_companies']] = movies[['production_companies']].applymap(json_to_arr)
-p_companies = list_counter(movies["production_companies"].values, log=False)
-# initialize all at 0
-for g in p_companies:
-    cat_name = 'prod_comp_' + g[0].lower().replace(" ", "")
-    movies[cat_name] = 0
+# movies[['production_companies']] = movies[['production_companies']].applymap(json_to_arr)
+# p_companies = list_counter(movies["production_companies"].values, log=False)
+# # initialize all at 0
+# for g in p_companies:
+#     cat_name = 'prod_comp_' + g[0].lower().replace(" ", "")
+#     movies[cat_name] = 0
 
 # # spoken languages
 # movies[['spoken_languages']] = movies[['spoken_languages']].applymap(lambda row: json_to_arr(row, "iso_639_1"))
@@ -159,20 +159,20 @@ for g in p_companies:
 # match categories
 for index, mov in movies.iterrows():
     # genre
-    if isinstance(mov['genres'], list):
-        for g in mov['genres']:
-            cat_name = 'genre_' + g.lower().replace(" ", "")
-            movies.at[index, cat_name] = 1
+    # if isinstance(mov['genres'], list):
+    #     for g in mov['genres']:
+    #         cat_name = 'genre_' + g.lower().replace(" ", "")
+    #         movies.at[index, cat_name] = 1
     # production country
     # if isinstance(mov['production_countries'], list):
     #     for g in mov['production_countries']:
     #         cat_name = 'prod_country_' + g.lower().replace(" ", "")
     #         movies.at[index, cat_name] = 1
     # production company
-    if isinstance(mov['production_companies'], list):
-        for g in mov['production_companies']:
-            cat_name = 'prod_comp_' + g.lower().replace(" ", "")
-            movies.at[index, cat_name] = 1
+    # if isinstance(mov['production_companies'], list):
+    #     for g in mov['production_companies']:
+    #         cat_name = 'prod_comp_' + g.lower().replace(" ", "")
+    #         movies.at[index, cat_name] = 1
     # # spoken language
     # if isinstance(mov['spoken_languages'], list):
     #     for g in mov['spoken_languages']:
@@ -180,23 +180,28 @@ for index, mov in movies.iterrows():
     #         movies.at[index, cat_name] = 1
     
     # categorize revenue
-    if mov['revenue'] <= 1000000: 
+    if  mov['revenue'] > mov['budget']:
         movies.at[index, 'rev_cat'] = 1
-    elif mov['revenue'] <= 40000000:
-        movies.at[index, 'rev_cat'] = 2
-    elif mov['revenue'] <= 150000000:
-        movies.at[index, 'rev_cat'] = 3
-    else:
-        movies.at[index, 'rev_cat'] = 4
+    else: 
+        movies.at[index, 'rev_cat'] = 0
+    # if mov['revenue'] <= 1000000: 
+    #     movies.at[index, 'rev_cat'] = 1
+    # elif mov['revenue'] <= 40000000:
+    #     movies.at[index, 'rev_cat'] = 2
+    # elif mov['revenue'] <= 150000000:
+    #     movies.at[index, 'rev_cat'] = 3
+    # else:
+    #     movies.at[index, 'rev_cat'] = 4
 
 # drop columns that are not needed anymore
-drop_df = ["adult", "homepage", "poster_path", "video", "imdb_id", "overview", "original_title", "title", "original_language", "vote_average", "vote_count", "popularity", "status", "tagline", "release_date", "release_year", "genres", "production_countries", "production_companies", "spoken_languages"]
+drop_df = ["revenue", "adult", "homepage", "poster_path", "video", "imdb_id", "overview", "original_title", "title", "original_language", "vote_average", "vote_count", "popularity", "status", "tagline", "release_date", "release_year", "genres", "production_countries", "production_companies", "spoken_languages"]
 movies = movies.drop(drop_df, axis=1) # drops the selected columns
 
 # scale features
-movies["budget"] = pd.DataFrame(preprocessing.MinMaxScaler().fit_transform(movies["budget"].values.reshape(-1, 1))).values
-movies["revenue"] = pd.DataFrame(preprocessing.MinMaxScaler().fit_transform(movies["revenue"].values.reshape(-1, 1))).values
-movies["runtime"] = pd.DataFrame(preprocessing.MinMaxScaler().fit_transform(movies["runtime"].values.reshape(-1, 1))).values
+# movies["budget"] = pd.DataFrame(preprocessing.MinMaxScaler().fit_transform(movies["budget"].values.reshape(-1, 1))).values
+# movies["revenue"] = pd.DataFrame(preprocessing.MinMaxScaler().fit_transform(movies["revenue"].values.reshape(-1, 1))).values
+# movies["revenue"] = pd.DataFrame(preprocessing.MinMaxScaler().fit_transform(movies["revenue"].values.reshape(-1, 1))).values
+# movies["rev_cat"] = pd.DataFrame(preprocessing.MinMaxScaler().fit_transform(movies["rev_cat"].values.reshape(-1, 1))).values
 # movies["popularity"] = pd.DataFrame(preprocessing.MinMaxScaler().fit_transform(movies["popularity"].values.reshape(-1, 1))).values
 
 # movies["vote_average"] = pd.DataFrame(preprocessing.MinMaxScaler().fit_transform(movies["vote_average"].values.reshape(-1, 1))).values
@@ -240,3 +245,4 @@ reordered_data = merged_data[np.array(cols)]
 # reordered_data = reordered_data[['revenue', 'budget', 'runtime', 'release_month']]
 # save out the trimmed data
 reordered_data.to_csv('./dataset/trimmed/movies_metadata.csv', index=False)
+
