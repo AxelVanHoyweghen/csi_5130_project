@@ -79,7 +79,7 @@ append_row_to_file(curr_model)
 # need to iterate over all different parameters to find the best model
 # parameters
 batch_sizes = [32, 64, 128]
-np_epoches = [10, 100, 500, 1000]
+np_epoches = [10, 100, 500, 750]
 activations = ['sigmoid', 'tanh', 'relu']
 hidden_layer_neurons = ['case_1', 'case_2']
 
