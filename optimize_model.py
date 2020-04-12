@@ -78,7 +78,7 @@ if os.path.exists('./stats/testing.csv') == False:
 # append_row_to_file(curr_model)
 # need to iterate over all different parameters to find the best model
 # parameters
-batch_sizes = [32, 64, 128]
+batch_sizes = [128, 64, 32, 10]
 np_epoches = [10, 100, 500, 750]
 activations = ['sigmoid', 'tanh', 'relu']
 hidden_layer_neurons = ['case_1', 'case_2']
@@ -88,9 +88,8 @@ for b_size in batch_sizes:
         for hl_neuron in hidden_layer_neurons:
             for il_activation in activations:
                 for hl_activation in activations:
-                    for ol_activation in activations:
-                        print(il_activation, hl_activation, ol_activation, np_epoch, b_size, hl_neuron)
-                        curr_model = eval_model(il_activation, hl_activation, ol_activation, np_epoch, b_size, hl_neuron)
+                        print(il_activation, hl_activation, 'softmax', np_epoch, b_size, hl_neuron)
+                        curr_model = eval_model(il_activation, hl_activation, 'softmax', np_epoch, b_size, hl_neuron)
                         append_row_to_file(curr_model)
 
 # # create the model
