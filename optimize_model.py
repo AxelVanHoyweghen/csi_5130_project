@@ -20,18 +20,19 @@ y_estimate = {
     'profit': {
         'file': 'movies_metadata_y_profit.csv',
         'loss_function': 'binary_crossentropy',
-        'ol_activation': 'sigmoid' 
+        'ol_activation': 'sigmoid'
     },
     'minmax': {
         'file': 'movies_metadata_y_minmax.csv',
         'loss_function': 'mean_squared_error',
-        'ol_activation': 'linear' 
+        'ol_activation': 'linear'
     }
 }
-y_estimate_selected = 'minmax'
+y_estimate_selected = input("Y estimate: ")
+
 
 # Evaluate model
-def eval_model(loss_fn, hl_activation, ol_activation, nb_epochs, batch_size, hidden_layer_neurons):
+def eval_model(loss_fn, opt_fn, hl_activation, ol_activation, nb_epochs, batch_size, hidden_layer_neurons):
     model = Sequential()
 
     model.add(Dense(X.shape[1], input_dim=X.shape[1], activation = hl_activation))
@@ -52,19 +53,19 @@ def eval_model(loss_fn, hl_activation, ol_activation, nb_epochs, batch_size, hid
 
     # output layer
     model.add(Dense(Y.shape[1], activation=ol_activation))
-
     # compile the model
-    model.compile(loss=loss_fn, optimizer='adam', metrics=['accuracy'])
+    model.compile(loss=loss_fn, optimizer='sgd', metrics=['accuracy'])
 
     # fit the model
     model.fit(X_train, Y_train, validation_data=(X_test, Y_test), epochs=nb_epochs, batch_size=batch_size)
 
     # evaluate the model
     eval_model=model.evaluate(X_train, Y_train)
+    print(eval_model)
     print("Accuracy eval: %.2f%%" %(eval_model[1]*100))
     del model
     print(gc.collect())
-    return [datetime.now().strftime("%m/%d/%Y, %H:%M:%S"), y_estimate_selected, loss_fn, hl_activation, ol_activation, nb_epochs, batch_size, hidden_layer_neurons, nb_layers, eval_model[1]]
+    return [datetime.now().strftime("%m/%d/%Y, %H:%M:%S"), y_estimate_selected, loss_fn, opt_fn, hl_activation, ol_activation, nb_epochs, batch_size, hidden_layer_neurons, nb_layers, eval_model[0], eval_model[1]]
 
 def append_row_to_file(list_of_elem):
     # Open file in append mode
@@ -89,7 +90,7 @@ X = pd.read_csv('./dataset/trimmed/movies_metadata_x.csv', low_memory=False)
 
 # initialize csv
 if os.path.exists('./stats/testing.csv') == False:
-    new_file = pd.DataFrame(columns=['current_time', 'y_estimate_type', 'loss_fn', 'hl_activation', 'ol_activation', 'nb_epochs', 'batch_size', 'hidden_layer_neurons', 'accuracy'])
+    new_file = pd.DataFrame(columns=['current_time', 'y_estimate_type', 'loss_fn', 'optimizer', 'hl_activation', 'ol_activation', 'nb_epochs', 'batch_size', 'hidden_layer_neurons', 'loss', 'accuracy'])
     new_file.to_csv('./stats/testing.csv', index=False)
 
 # find the best model
@@ -103,13 +104,15 @@ batch_sizes = [128, 64, 32, 10]
 np_epoches = [10, 100, 500, 750]
 activations = ['sigmoid', 'tanh', 'relu']
 hidden_layer_neurons = ['case_1', 'case_2']
+optimizer_fn = ['adam', 'sgd', 'rmsprop']
 
 for b_size in batch_sizes:
     for np_epoch in np_epoches:
         for hl_neuron in hidden_layer_neurons:
             for hl_activation in activations:
-                    print(y_estimate[y_estimate_selected]['loss_function'], hl_activation, y_estimate[y_estimate_selected]['ol_activation'], np_epoch, b_size, hl_neuron)
-                    curr_model = eval_model(y_estimate[y_estimate_selected]['loss_function'], hl_activation, y_estimate[y_estimate_selected]['ol_activation'], np_epoch, b_size, hl_neuron)
+                for opt_fn in optimizer_fn:
+                    print(y_estimate[y_estimate_selected]['loss_function'], opt_fn, hl_activation, y_estimate[y_estimate_selected]['ol_activation'], np_epoch, b_size, hl_neuron)
+                    curr_model = eval_model(y_estimate[y_estimate_selected]['loss_function'], opt_fn, hl_activation, y_estimate[y_estimate_selected]['ol_activation'], np_epoch, b_size, hl_neuron)
                     append_row_to_file(curr_model)
 
 # # create the model
