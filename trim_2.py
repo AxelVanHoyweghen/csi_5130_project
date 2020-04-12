@@ -119,10 +119,12 @@ movies = movies.loc[movies['runtime'] > 45]
 movies["runtime"] = pd.DataFrame(preprocessing.MinMaxScaler().fit_transform(movies["runtime"].values.reshape(-1, 1))).values
 
 # release_month 
-enc_rm = pd.DataFrame(OneHotEncoder(handle_unknown='ignore').fit_transform(movies[['release_month']]).toarray())
-enc_rm.columns = ['month_01', 'month_02', 'month_03', 'month_04', 'month_05', 'month_06', 'month_07', 'month_08', 'month_09', 'month_10', 'month_11', 'month_12']
-movies = movies.join(enc_rm)
-movies.drop(['release_month'], axis=1, inplace=True)
+# enc_rm = pd.DataFrame(OneHotEncoder(handle_unknown='ignore').fit_transform(movies[['release_month']]).toarray())
+# enc_rm.columns = ['month_01', 'month_02', 'month_03', 'month_04', 'month_05', 'month_06', 'month_07', 'month_08', 'month_09', 'month_10', 'month_11', 'month_12']
+# movies = movies.join(enc_rm)
+# movies.drop(['release_month'], axis=1, inplace=True)
+movies["release_month"] = pd.DataFrame(preprocessing.MinMaxScaler().fit_transform(movies["release_month"].values.reshape(-1, 1))).values
+
 
 # genres -> initialize to 0
 movies[['genres']] = movies[['genres']].applymap(json_to_arr)
