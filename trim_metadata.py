@@ -246,3 +246,4 @@ reordered_data = merged_data[np.array(cols)]
 # save out the trimmed data
 reordered_data.to_csv('./dataset/trimmed/movies_metadata.csv', index=False)
 
+cp ~/movies_metadata.csv ./dataset/original/movies_metadata.csv

@@ -73,9 +73,9 @@ if os.path.exists('./stats/testing.csv') == False:
     new_file.to_csv('./stats/testing.csv', index=False)
 
 # find the best model
-curr_model = eval_model('relu', 'relu', 'softmax', 100, 10, 'case_1')
-print(curr_model)
-append_row_to_file(curr_model)
+# curr_model = eval_model('relu', 'relu', 'softmax', 100, 10, 'case_1')
+# print(curr_model)
+# append_row_to_file(curr_model)
 # need to iterate over all different parameters to find the best model
 # parameters
 batch_sizes = [32, 64, 128]
