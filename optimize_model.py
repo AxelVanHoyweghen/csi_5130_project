@@ -9,6 +9,25 @@ import pandas as pd
 import os
 from datetime import datetime
 from csv import writer
+from keras.backend.tensorflow_backend import set_session
+from keras.backend.tensorflow_backend import clear_session
+from keras.backend.tensorflow_backend import get_session
+import tensorflow
+import gc
+# Reset Keras Session
+def reset_keras(model):
+    sess = get_session()
+    clear_session()
+    sess.close()
+    sess = get_session()
+
+    try:
+        del model # this is from global space - change this as you need
+    except:
+        pass
+
+    print(gc.collect()) # if it's done something you should see a number being outputted
+    return True
 
 def eval_model(il_activation, hl_activation, ol_activation, nb_epochs, batch_size, hidden_layer_neurons):
     model = Sequential()
@@ -39,7 +58,7 @@ def eval_model(il_activation, hl_activation, ol_activation, nb_epochs, batch_siz
     # evaluate the model
     eval_model=model.evaluate(X_train, Y_train)
     print("Accuracy eval: %.2f%%" %(eval_model[1]*100))
-    del model
+    reset_keras(model)
     return [datetime.now().strftime("%m/%d/%Y, %H:%M:%S"), il_activation, hl_activation, ol_activation, nb_epochs, batch_size, hidden_layer_neurons, eval_model[1]]
 
 def append_row_to_file(list_of_elem):
