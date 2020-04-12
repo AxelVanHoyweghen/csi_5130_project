@@ -133,12 +133,12 @@ for g in genres:
     movies[cat_name] = 0
 
 # production companies -> initialize to 0
-movies[['production_companies']] = movies[['production_companies']].applymap(json_to_arr)
-p_companies = list_counter(movies["production_companies"].values, log=False)
-# initialize all at 0
-for g in p_companies:
-    cat_name = 'prod_comp_' + g[0].lower().replace(" ", "_")
-    movies[cat_name] = 0
+# movies[['production_companies']] = movies[['production_companies']].applymap(json_to_arr)
+# p_companies = list_counter(movies["production_companies"].values, log=False)
+# # initialize all at 0
+# for g in p_companies:
+#     cat_name = 'prod_comp_' + g[0].lower().replace(" ", "_")
+#     movies[cat_name] = 0
 
 # account for inflation for older movies
 for index, mov in movies.iterrows():
@@ -160,10 +160,10 @@ for index, mov in movies.iterrows():
             cat_name = 'genre_' + g.lower().replace(" ", "_")
             movies.at[index, cat_name] = 1
     # production company -> set 1 where has company
-    if isinstance(mov['production_companies'], list):
-        for g in mov['production_companies']:
-            cat_name = 'prod_comp_' + g.lower().replace(" ", "_")
-            movies.at[index, cat_name] = 1
+    # if isinstance(mov['production_companies'], list):
+    #     for g in mov['production_companies']:
+    #         cat_name = 'prod_comp_' + g.lower().replace(" ", "_")
+    #         movies.at[index, cat_name] = 1
     # categorize revenue
     movies.at[index, 'rev_cat_01'] = 0
     movies.at[index, 'rev_cat_02'] = 0
