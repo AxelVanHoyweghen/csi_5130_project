@@ -74,12 +74,22 @@ for g in genres:
     cat_name = 'genre_' + g[0].lower().replace(" ", "_")
     movies[cat_name] = 0
 
+# production companies -> initialize to 0
+p_companies = pd.unique(movies["production_company"].values)
+# initialize all at 0
+for company in p_companies:
+    cat_name = 'prod_comp_' + company
+    movies[cat_name] = 0
+
 for index, mov in movies.iterrows():
     # genre -> set 1 where has genre
     if isinstance(mov['genres'], list):
         for g in mov['genres']:
             cat_name = 'genre_' + g.lower().replace(" ", "_")
             movies.at[index, cat_name] = 1
+    # production company -> set 1 where has company
+    cat_name = 'prod_comp_' + mov['production_company']
+    movies.at[index, cat_name] = 1
     # movie has profit
     if mov['revenue'] > mov['budget']:
         movies.at[index, 'has_profit'] = 1
@@ -105,9 +115,9 @@ movies["revenue_minmax"] = pd.DataFrame(preprocessing.MinMaxScaler().fit_transfo
 
 
 # encode the director, main_actor, and production company 'director', 'main_actor', 
-for col in ['production_company']:
-    print(col)
-    movies = movies.join(pd.get_dummies(pd.DataFrame(pd.unique(movies[col].values), columns=[col]), columns=[col], prefix=[col] ))
+# for col in ['production_company']:
+#     matrix = pd.get_dummies(pd.DataFrame(movies[col].values, columns=[col]), columns=[col], prefix=[col], dtype='int32')
+#     movies = pd.concat([movies, matrix])
 
 # cleanup
 movies = movies.drop(["revenue", "genres", "production_countries", "spoken_languages", 'director', 'main_actor', 'production_company'], axis=1) # drops the selected columns

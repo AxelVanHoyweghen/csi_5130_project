@@ -12,31 +12,42 @@ from sklearn.linear_model import LinearRegression
 from sklearn.feature_selection import RFE
 from sklearn.linear_model import RidgeCV, LassoCV, Ridge, Lasso
 
+from sklearn.feature_selection import SelectKBest
+from sklearn.feature_selection import chi2
+
 #Loading the dataset
-dataset = pd.read_csv('./dataset/trimmed/movies_metadata.csv', low_memory=False)
 
-
-Y = dataset["rev_cat"]
-X = dataset.drop("rev_cat", 1)
-
+Y = pd.read_csv('./dataset/trimmed/movies_metadata_y_profit.csv', low_memory=False)
+X = pd.read_csv('./dataset/trimmed/movies_metadata_x.csv', low_memory=False)
+print(X.values[:, 0:X.shape[1]])
 # dataset.head()
+test = SelectKBest(score_func=chi2, k=10)
+fit = test.fit(X.values[:, 0:X.shape[1]], Y.values[:, 0])
+
+# Summarize scores
+np.set_printoptions(precision=3)
+print(fit.scores_)
+
+features = fit.transform(X)
+# Summarize selected features
+print(features[0:5,:])
 
 # filter method
 
-# Using Pearson Correlation
-plt.figure(figsize=(12,10))
-cor = dataset.corr()
-# sns.heatmap(cor, annot=True, cmap=plt.cm.Reds)
-print(cor)
+# # Using Pearson Correlation
+# plt.figure(figsize=(12,10))
+# cor = dataset.corr()
+# # sns.heatmap(cor, annot=True, cmap=plt.cm.Reds)
+# print(cor)
 
-# plt.show()
+# # plt.show()
 
-# # Correlation with output variable
-cor_target = abs(cor["rev_cat"])
-# # Selecting highly correlated features
-relevant_features = cor_target[cor_target>0]
+# # # Correlation with output variable
+# cor_target = abs(cor["rev_cat"])
+# # # Selecting highly correlated features
+# relevant_features = cor_target[cor_target>0]
 
-relevant_features.to_csv('./stats/corr.csv')
+# relevant_features.to_csv('./stats/corr.csv')
 
 
-print(relevant_features)
+# print(relevant_features)

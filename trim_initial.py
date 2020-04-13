@@ -114,7 +114,7 @@ merged_data = pd.merge(movies, movie_credits, on=['id'], how='left')
 merged_data = merged_data.drop(['id'], axis=1) # drops the selected columns
 
 # drop row if any of the columns are nan, we want clean data with all columns available
-cols  = list(merged_data)
+cols = list(merged_data)
 merged_data.dropna(subset=np.array(cols), inplace=True)
 
 # save file
